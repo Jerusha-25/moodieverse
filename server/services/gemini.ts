@@ -1,13 +1,19 @@
-import { GoogleGenAI } from "@google/genai";
+import dotenv from "dotenv";
+dotenv.config();
 
-const ai = new GoogleGenAI({ 
-  apiKey: process.env.GEMINI_API_KEY || process.env.GOOGLE_API_KEY || "" 
-});
+import { GoogleGenerativeAI } from "@google/generative-ai";
+
+// Initialize Gemini with API Key (from .env)
+const genAI = new GoogleGenerativeAI(
+  process.env.GEMINI_API_KEY || process.env.GOOGLE_API_KEY || ""
+);
+
+const model = genAI.getGenerativeModel({ model: "gemini-pro" }); // use "gemini-pro" or "gemini-1.5-flash"
 
 export async function generateWellnessPrompt(mood: string, journal?: string): Promise<string> {
   try {
     const contextualInfo = journal ? `The user also shared: "${journal}"` : "";
-    
+
     const prompt = `You are a compassionate wellness coach. A user has checked in with their mood as "${mood}". ${contextualInfo}
 
 Based on their current emotional state, provide a single, personalized wellness prompt that:
@@ -24,22 +30,16 @@ Examples of good prompts:
 
 Respond with just the wellness prompt, no additional text or explanations.`;
 
-    const response = await ai.models.generateContent({
-      model: "gemini-2.5-flash",
-      contents: prompt,
-    });
+    const result = await model.generateContent(prompt);
+    const response = await result.response.text();
 
-    const generatedPrompt = response.text?.trim();
-    
-    if (!generatedPrompt) {
-      throw new Error("Empty response from AI");
-    }
+    const generatedPrompt = response?.trim();
+    if (!generatedPrompt) throw new Error("Empty response from Gemini");
 
     return generatedPrompt;
   } catch (error) {
     console.error("Failed to generate wellness prompt:", error);
-    
-    // Fallback prompts based on mood
+
     const fallbackPrompts: Record<string, string> = {
       happy: "Take a moment to appreciate this positive feeling. What can you do to share this joy with others?",
       good: "You're feeling good today! Consider setting a small, meaningful intention for the rest of your day.",
@@ -47,7 +47,7 @@ Respond with just the wellness prompt, no additional text or explanations.`;
       sad: "It's okay to feel sad. Your emotions are valid. Try reaching out to someone you trust or doing one gentle thing for yourself.",
       anxious: "When anxiety feels overwhelming, remember that this feeling will pass. Focus on what you can control in this moment."
     };
-    
+
     return fallbackPrompts[mood] || "Take a deep breath and be gentle with yourself. You're doing better than you think.";
   }
 }
@@ -69,22 +69,16 @@ Examples:
 
 Respond with just the supportive message, no additional text.`;
 
-    const response = await ai.models.generateContent({
-      model: "gemini-2.5-flash",
-      contents: prompt,
-    });
+    const result = await model.generateContent(prompt);
+    const response = await result.response.text();
 
-    const generatedMessage = response.text?.trim();
-    
-    if (!generatedMessage) {
-      throw new Error("Empty response from AI");
-    }
+    const generatedMessage = response?.trim();
+    if (!generatedMessage) throw new Error("Empty response from Gemini");
 
     return generatedMessage;
   } catch (error) {
     console.error("Failed to generate kindness message:", error);
-    
-    // Fallback messages
+
     const fallbackMessages = [
       "You're doing better than you think. Every small step forward matters. 💜",
       "Remember that you are worthy of love and kindness, especially from yourself. 🌸",
@@ -92,7 +86,7 @@ Respond with just the supportive message, no additional text.`;
       "Your story isn't over yet. There are still beautiful chapters to be written. 🌟",
       "Be gentle with yourself today. You're exactly where you need to be. 💙"
     ];
-    
+
     return fallbackMessages[Math.floor(Math.random() * fallbackMessages.length)];
   }
 }
