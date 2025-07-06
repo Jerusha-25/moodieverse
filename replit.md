@@ -120,7 +120,16 @@ MoodieVerse is a privacy-first mental wellness application that combines mood tr
 
 Preferred communication style: Simple, everyday language.
 
+## Recent Changes
+
+- **Enhanced Visual Design (July 06, 2025)**: Complete colorful redesign with rainbow gradients, animated cards, hover effects, and vibrant UI elements throughout the application
+- **Milestone Streak System (July 06, 2025)**: Automatic streak tracking with celebration notifications at 3, 7, 14, 30, 50, and 100-day milestones
+- **Interactive Crisis Support (July 06, 2025)**: Enhanced crisis toolkit with guided breathing exercises, 5-4-3-2-1 grounding technique, and clear explanations for each tool
+- **Shareable Garden Snapshots (July 06, 2025)**: html2canvas integration allowing users to create and share beautiful images of their wellness progress
+- **Privacy Controls (July 06, 2025)**: Complete data export/import functionality with local storage management and clear data options
+- **AI Integration (July 06, 2025)**: Successfully configured Google Gemini AI for personalized wellness prompts and kindness message generation
+- **Onboarding Experience (July 06, 2025)**: Interactive modal with proper navigation and feature explanations
+
 ## Changelog
 
-Changelog:
-- July 06, 2025. Initial setup
+- July 06, 2025: Initial MoodieVerse setup with complete feature implementation
